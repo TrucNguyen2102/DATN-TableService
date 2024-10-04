@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class TypePriceId implements Serializable {
@@ -38,5 +39,18 @@ public class TypePriceId implements Serializable {
         this.priceId = priceId;
     }
 
-    
+    // Override equals và hashCode để so sánh các khóa chính
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TypePriceId that = (TypePriceId) o;
+        return Objects.equals(typeId, that.typeId) && Objects.equals(priceId, that.priceId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(typeId, priceId);
+    }
+
 }
