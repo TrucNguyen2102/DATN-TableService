@@ -8,14 +8,13 @@ import java.util.Objects;
 
 @Embeddable
 public class TypePriceId implements Serializable {
-    @Column(name = "type_id")
+//    @Column(name = "type_id")
     private Integer typeId;
 
-    @Column(name = "price_id")
+//    @Column(name = "price_id")
     private Integer priceId;
 
     public TypePriceId() {
-
     }
 
     public TypePriceId(Integer typeId, Integer priceId) {
@@ -39,7 +38,6 @@ public class TypePriceId implements Serializable {
         this.priceId = priceId;
     }
 
-    // Override equals và hashCode để so sánh các khóa chính
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,5 +50,4 @@ public class TypePriceId implements Serializable {
     public int hashCode() {
         return Objects.hash(typeId, priceId);
     }
-
 }

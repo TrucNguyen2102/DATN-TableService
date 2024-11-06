@@ -10,7 +10,7 @@ public class TablePlay {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "table_num")
+    @Column(name = "table_num", nullable = false)
     private Integer tableNum;
 
     @Column(name = "table_status", length = 50, nullable = false)
