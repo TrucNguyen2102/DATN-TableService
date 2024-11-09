@@ -36,7 +36,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/tables/update/{id}").permitAll()
                         .requestMatchers("/api/tables/with-prices").permitAll()
                                 .requestMatchers("/api/tables/with-type-price/{id}").permitAll()
-                                .requestMatchers("/api/tables/update/{id}/status").permitAll()
+//                                .requestMatchers("/api/tables/update/{tableId}/status").permitAll()
+                                .requestMatchers("/api/tables/update-status").permitAll()
 
 
                         .anyRequest().authenticated()

@@ -123,18 +123,64 @@ public class TablePlayController {
         }
     }
 
-    @PutMapping("/update/{id}/status")
-    public ResponseEntity<String> updateTableStatus(@PathVariable Integer id, @RequestBody TableStatusUpdateRequest request) {
+//    @PutMapping("/update/{tableId}/status")
+//    public ResponseEntity<String> updateTableStatus(@PathVariable Integer tableId, @RequestParam("table_status") String tableStatus) {
+//        try {
+//            Optional<TablePlay> optionalTable = tablePlayRepo.findById(tableId);
+//            if (!optionalTable.isPresent()) {
+//                return ResponseEntity.badRequest().body("Bàn không tồn tại.");
+//            }
+//
+//            TablePlay table = optionalTable.get();
+//            table.setTableStatus(tableStatus);
+//            tablePlayRepo.save(table);
+//            return ResponseEntity.ok("Trạng thái bàn đã được cập nhật thành công.");
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//
+//    }
+
+    //API để cập nhật trạng thái bàn
+//    @PutMapping("/update/{tableId}/status")
+//    public ResponseEntity<String> updateTableStatus(@PathVariable Integer tableId,
+//                                                    @RequestParam String tableStatus) {
+//        try {
+//            Optional<TablePlay> optionalTable = tablePlayRepo.findById(tableId);
+//            if (!optionalTable.isPresent()) {
+//                return ResponseEntity.badRequest().body("Bàn không tồn tại.");
+//            }
+//
+//            TablePlay table = optionalTable.get();
+//            table.setTableStatus(tableStatus);
+//            tablePlayRepo.save(table);
+//            return ResponseEntity.ok("Trạng thái bàn đã được cập nhật thành công.");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi cập nhật trạng thái bàn.");
+//        }
+//    }
+
+    @PutMapping("/update-status")
+    public ResponseEntity<String> updateTableStatus(@RequestBody Map<String, Object> request) {
         try {
-            Optional<TablePlay> optionalTable = tablePlayRepo.findById(id);
-            if (!optionalTable.isPresent()) {
-                return ResponseEntity.badRequest().body("Bàn không tồn tại.");
+            Integer tableId = (Integer) request.get("tableId");
+            String status = (String) request.get("status");
+
+            // Kiểm tra tính hợp lệ của các tham số
+            if (tableId == null || status == null || status.isEmpty()) {
+                return ResponseEntity.badRequest().body("Thông tin bàn hoặc trạng thái không hợp lệ.");
             }
 
-            TablePlay table = optionalTable.get();
-            table.setTableStatus(request.getTableStatus());
-            tablePlayRepo.save(table);
-            return ResponseEntity.ok("Trạng thái bàn đã được cập nhật thành công.");
+            Optional<TablePlay> tableOptional = tablePlayRepo.findById(tableId);
+            if (tableOptional.isPresent()) {
+                TablePlay table = tableOptional.get();
+                table.setTableStatus(status); // Cập nhật trạng thái bàn
+                tablePlayRepo.save(table);
+                return ResponseEntity.ok("Trạng thái bàn đã được cập nhật thành công.");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bàn không tồn tại.");
         }catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
