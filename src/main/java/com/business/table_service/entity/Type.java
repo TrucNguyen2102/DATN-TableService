@@ -19,7 +19,7 @@ public class Type {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "type")
+    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference // Chỉ định phía bị quản lý
     private Set<TypePrice> typePrices = new HashSet<>();
 

@@ -84,6 +84,44 @@ public class TypeServiceImpl implements TypeService{
         return typeRepo.findAll();
     }
 
+//    @Transactional
+//    public Type updateType(Integer id, TypeDTO typeDTO) {
+//        Optional<Type> optionalType = typeRepo.findById(id);
+//        if (!optionalType.isPresent()) {
+//            throw new RuntimeException("Loại bàn không tồn tại");
+//        }
+//
+//        Type type = optionalType.get();
+//        type.setName(typeDTO.getName());
+//
+//        // Xóa các mối quan hệ hiện tại
+//        typePriceRepo.deleteAll(type.getTypePrices());
+//        type.getTypePrices().clear();
+//
+//        // Lấy danh sách giá mới
+//        List<Price> selectedPrices = priceRepo.findAllById(typeDTO.getPriceIds());
+//        if (selectedPrices.size() != typeDTO.getPriceIds().size()) {
+//            throw new RuntimeException("Một hoặc nhiều giá không tồn tại");
+//        }
+//
+//        Set<TypePrice> newTypePrices = new HashSet<>();
+//        for (Price price : selectedPrices) {
+//            TypePrice typePrice = new TypePrice();
+//            typePrice.setType(type);
+//            typePrice.setPrice(price);
+//
+//            // Thiết lập ID cho TypePriceId
+//            TypePriceId typePriceId = new TypePriceId(type.getId(), price.getId());
+//            typePrice.setId(typePriceId); // Thiết lập ID cho TypePrice
+//
+//            newTypePrices.add(typePrice);
+//        }
+//
+//        type.setTypePrices(newTypePrices);
+//
+//        return typeRepo.save(type);
+//    }
+
     @Transactional
     public Type updateType(Integer id, TypeDTO typeDTO) {
         Optional<Type> optionalType = typeRepo.findById(id);
@@ -94,33 +132,28 @@ public class TypeServiceImpl implements TypeService{
         Type type = optionalType.get();
         type.setName(typeDTO.getName());
 
-        // Xóa các mối quan hệ hiện tại
-        typePriceRepo.deleteAll(type.getTypePrices());
+        // Xóa từng phần tử trong tập hợp `typePrices` thay vì xóa toàn bộ
+        type.getTypePrices().forEach(typePriceRepo::delete);
         type.getTypePrices().clear();
 
-        // Lấy danh sách giá mới
         List<Price> selectedPrices = priceRepo.findAllById(typeDTO.getPriceIds());
         if (selectedPrices.size() != typeDTO.getPriceIds().size()) {
             throw new RuntimeException("Một hoặc nhiều giá không tồn tại");
         }
 
-        Set<TypePrice> newTypePrices = new HashSet<>();
         for (Price price : selectedPrices) {
             TypePrice typePrice = new TypePrice();
             typePrice.setType(type);
             typePrice.setPrice(price);
+            typePrice.setId(new TypePriceId(type.getId(), price.getId()));
 
-            // Thiết lập ID cho TypePriceId
-            TypePriceId typePriceId = new TypePriceId(type.getId(), price.getId());
-            typePrice.setId(typePriceId); // Thiết lập ID cho TypePrice
-
-            newTypePrices.add(typePrice);
+            // Thêm mới `typePrice` vào `typePrices`
+            type.getTypePrices().add(typePrice);
         }
-
-        type.setTypePrices(newTypePrices);
 
         return typeRepo.save(type);
     }
+
 
     @Override
     public void deleteType(Integer id) {
@@ -146,4 +179,6 @@ public class TypeServiceImpl implements TypeService{
             throw new ResourceNotFoundException("Type not found with id: " + typeId);
         }
     }
+
+
 }

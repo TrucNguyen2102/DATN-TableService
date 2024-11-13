@@ -1,6 +1,7 @@
 package com.business.table_service.service;
 
 
+import com.business.table_service.dto.TablePlayInfo;
 import com.business.table_service.dto.TablePlayWithPriceDTO;
 import com.business.table_service.entity.Price;
 import com.business.table_service.entity.TablePlay;
@@ -10,11 +11,14 @@ import com.business.table_service.repository.TablePlayRepo;
 import com.business.table_service.repository.TypePriceRepo;
 import com.business.table_service.repository.TypeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TablePlayServiceImpl implements TablePlayService{
@@ -35,6 +39,11 @@ public class TablePlayServiceImpl implements TablePlayService{
     @Override
     public List<TablePlay> getAllTables() {
         return tablePlayRepo.findAll();
+    }
+
+    // Phương thức phân trang để lấy các bàn
+    public Page<TablePlay> getAllTables(Pageable pageable) {
+        return tablePlayRepo.findAll(pageable);  // Sử dụng phương thức findAll() của JpaRepository với Pageable
     }
 
 
@@ -113,7 +122,9 @@ public class TablePlayServiceImpl implements TablePlayService{
         return null; // Trả về null nếu không tìm thấy bàn
     }
 
-
+    public List<TablePlay> getTablesByStatus(String status) {
+        return tablePlayRepo.findByTableStatus(status);
+    }
 
 
 

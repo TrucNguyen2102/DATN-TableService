@@ -1,16 +1,17 @@
 package com.business.table_service.controller;
 
+import com.business.table_service.dto.TablePlayInfo;
 import com.business.table_service.dto.TablePlayDTO;
 import com.business.table_service.dto.TablePlayWithPriceDTO;
-import com.business.table_service.dto.TableStatusUpdateRequest;
 import com.business.table_service.entity.TablePlay;
 import com.business.table_service.entity.Type;
-import com.business.table_service.exception.ResourceNotFoundException;
 import com.business.table_service.repository.TablePlayRepo;
 import com.business.table_service.repository.TypeRepo;
 import com.business.table_service.service.TablePlayService;
 import com.business.table_service.service.TypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tables")
@@ -55,6 +57,22 @@ public class TablePlayController {
 
     }
 
+    @GetMapping("/pages/all")
+    public ResponseEntity<Page<TablePlay>> getAllTables(Pageable pageable) {
+        try {
+            // Lấy danh sách bàn theo phân trang
+            Page<TablePlay> tablePlays = tablePlayService.getAllTables(pageable);
+
+            if (tablePlays.isEmpty()) {
+                return ResponseEntity.noContent().build();  // Nếu danh sách rỗng, trả về mã 204 (No Content)
+            }
+            return ResponseEntity.ok(tablePlays);  // Trả về danh sách bàn kèm theo thông tin phân trang với mã 200 (OK)
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Trả về lỗi 500 (Internal Server Error)
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<TablePlay>> getAllTables() {
         try {
@@ -70,21 +88,26 @@ public class TablePlayController {
 
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Integer> getTableIdById(@PathVariable Integer id) {
-//        try {
-//            // Tìm table theo ID
-//            TablePlay table = tablePlayService.findById(id)
-//                    .orElseThrow(() -> new ResourceNotFoundException("Table not found for ID: " + id));
-//
-//            // Trả về tableId
-//            return new ResponseEntity<>(table.getId(), HttpStatus.OK);
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//
-//    }
+
+    @GetMapping("/with-tableNum-typeName")
+    public ResponseEntity<List<Map<String, Object>>> getTablesWithNumAndType() {
+        try {
+            List<TablePlay> tablePlays = tablePlayService.getAllTables();
+
+            List<Map<String, Object>> tableData = tablePlays.stream().map(table -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", table.getId());  // Thêm id của table
+                map.put("tableNum", table.getTableNum());
+                map.put("typeName", table.getType().getName());  // typeName lấy từ bảng liên kết (Type)
+                return map;
+            }).collect(Collectors.toList());
+
+            return ResponseEntity.ok(tableData);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
     @GetMapping("/with-prices")
@@ -123,49 +146,27 @@ public class TablePlayController {
         }
     }
 
-//    @PutMapping("/update/{tableId}/status")
-//    public ResponseEntity<String> updateTableStatus(@PathVariable Integer tableId, @RequestParam("table_status") String tableStatus) {
-//        try {
-//            Optional<TablePlay> optionalTable = tablePlayRepo.findById(tableId);
-//            if (!optionalTable.isPresent()) {
-//                return ResponseEntity.badRequest().body("Bàn không tồn tại.");
-//            }
-//
-//            TablePlay table = optionalTable.get();
-//            table.setTableStatus(tableStatus);
-//            tablePlayRepo.save(table);
-//            return ResponseEntity.ok("Trạng thái bàn đã được cập nhật thành công.");
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//
-//    }
-
-    //API để cập nhật trạng thái bàn
-//    @PutMapping("/update/{tableId}/status")
-//    public ResponseEntity<String> updateTableStatus(@PathVariable Integer tableId,
-//                                                    @RequestParam String tableStatus) {
-//        try {
-//            Optional<TablePlay> optionalTable = tablePlayRepo.findById(tableId);
-//            if (!optionalTable.isPresent()) {
-//                return ResponseEntity.badRequest().body("Bàn không tồn tại.");
-//            }
-//
-//            TablePlay table = optionalTable.get();
-//            table.setTableStatus(tableStatus);
-//            tablePlayRepo.save(table);
-//            return ResponseEntity.ok("Trạng thái bàn đã được cập nhật thành công.");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi cập nhật trạng thái bàn.");
-//        }
-//    }
 
     @PutMapping("/update-status")
     public ResponseEntity<String> updateTableStatus(@RequestBody Map<String, Object> request) {
         try {
-            Integer tableId = (Integer) request.get("tableId");
+            // Lấy tableId từ request và chuyển thành Integer
+            Object tableIdObject = request.get("tableId");
+            Integer tableId = null;
+
+            if (tableIdObject instanceof String) {
+                // Nếu là String, chuyển sang Integer
+                try {
+                    tableId = Integer.parseInt((String) tableIdObject);
+                } catch (NumberFormatException e) {
+                    return ResponseEntity.badRequest().body("ID bàn không hợp lệ.");
+                }
+            } else if (tableIdObject instanceof Integer) {
+                // Nếu là Integer, gán trực tiếp
+                tableId = (Integer) tableIdObject;
+            }
+
+            // Lấy trạng thái từ request
             String status = (String) request.get("status");
 
             // Kiểm tra tính hợp lệ của các tham số
@@ -178,9 +179,29 @@ public class TablePlayController {
                 TablePlay table = tableOptional.get();
                 table.setTableStatus(status); // Cập nhật trạng thái bàn
                 tablePlayRepo.save(table);
+
+
                 return ResponseEntity.ok("Trạng thái bàn đã được cập nhật thành công.");
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bàn không tồn tại.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+    // API để lấy thông tin bàn theo ID cùng với giá
+    @GetMapping("/with-type-price/{id}")
+    public ResponseEntity<TablePlayWithPriceDTO> getTableWithPrice(@PathVariable Integer id) {
+        try {
+            TablePlayWithPriceDTO tableWithPrice = tablePlayService.getTableWithPriceById(id);
+            if (tableWithPrice != null) {
+                return ResponseEntity.ok(tableWithPrice);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -188,16 +209,11 @@ public class TablePlayController {
 
     }
 
-    // API để lấy thông tin bàn theo ID cùng với giá
-    @GetMapping("/with-type-price/{id}")
-    public ResponseEntity<TablePlayWithPriceDTO> getTableWithPrice(@PathVariable Integer id) {
-        TablePlayWithPriceDTO tableWithPrice = tablePlayService.getTableWithPriceById(id);
-        if (tableWithPrice != null) {
-            return ResponseEntity.ok(tableWithPrice);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/available")
+    public List<TablePlay> getAvailableTables() {
+        return tablePlayService.getTablesByStatus("Trống");  // Trả về các bàn có trạng thái "Trống"
     }
+
 
 
 }
