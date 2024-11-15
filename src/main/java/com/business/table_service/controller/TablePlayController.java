@@ -1,10 +1,9 @@
 package com.business.table_service.controller;
 
-import com.business.table_service.dto.TablePlayInfo;
-import com.business.table_service.dto.TablePlayDTO;
-import com.business.table_service.dto.TablePlayWithPriceDTO;
+import com.business.table_service.dto.*;
 import com.business.table_service.entity.TablePlay;
 import com.business.table_service.entity.Type;
+import com.business.table_service.exception.ResourceNotFoundException;
 import com.business.table_service.repository.TablePlayRepo;
 import com.business.table_service.repository.TypeRepo;
 import com.business.table_service.service.TablePlayService;
@@ -213,7 +212,5 @@ public class TablePlayController {
     public List<TablePlay> getAvailableTables() {
         return tablePlayService.getTablesByStatus("Trống");  // Trả về các bàn có trạng thái "Trống"
     }
-
-
 
 }

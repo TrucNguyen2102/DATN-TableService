@@ -28,20 +28,17 @@ public class SecurityConfig {
                         .requestMatchers("/api/tables/types/all").permitAll()
                         .requestMatchers("/api/tables/types/update/{id}").permitAll()
                         .requestMatchers("/api/tables/types/delete/{id}").permitAll()
-//                                .requestMatchers("/api/tables/types/{typeId}").permitAll()
 
                         .requestMatchers("/api/tables/add").permitAll()
                         .requestMatchers("/api/tables/all").permitAll()
                                 .requestMatchers("/api/tables/pages/all").permitAll()
-//                        .requestMatchers("/api/tables/{id}").permitAll()
                         .requestMatchers("/api/tables/update/{id}").permitAll()
                         .requestMatchers("/api/tables/with-prices").permitAll()
                                 .requestMatchers("/api/tables/with-type-price/{id}").permitAll()
-//                                .requestMatchers("/api/tables/update/{tableId}/status").permitAll()
                                 .requestMatchers("/api/tables/update-status").permitAll()
                                 .requestMatchers("/api/tables/available").permitAll()
                                 .requestMatchers("/api/tables/with-tableNum-typeName").permitAll()
-                                .requestMatchers("/api/tables/{tableId}").permitAll()
+
 
 
                         .anyRequest().authenticated()

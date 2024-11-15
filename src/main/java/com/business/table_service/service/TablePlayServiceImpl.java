@@ -3,6 +3,7 @@ package com.business.table_service.service;
 
 import com.business.table_service.dto.TablePlayInfo;
 import com.business.table_service.dto.TablePlayWithPriceDTO;
+import com.business.table_service.dto.TableStatusUpdateRequest;
 import com.business.table_service.entity.Price;
 import com.business.table_service.entity.TablePlay;
 import com.business.table_service.exception.ResourceNotFoundException;

@@ -2,6 +2,7 @@ package com.business.table_service.service;
 
 import com.business.table_service.dto.TablePlayInfo;
 import com.business.table_service.dto.TablePlayWithPriceDTO;
+import com.business.table_service.dto.TableStatusUpdateRequest;
 import com.business.table_service.entity.TablePlay;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +13,6 @@ import java.util.Optional;
 public interface TablePlayService {
     Page<TablePlay> getAllTables(Pageable pageable);
     List<TablePlay> getAllTables();
-//    List<TablePlayResponse> getAllTables();
-
-
 
     TablePlay addTablePlay(TablePlay tablePlay);
 
@@ -34,6 +32,5 @@ public interface TablePlayService {
 
 
     List<TablePlay> getTablesByStatus(String status);
-
 
 }
