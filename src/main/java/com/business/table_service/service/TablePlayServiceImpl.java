@@ -97,15 +97,26 @@ public class TablePlayServiceImpl implements TablePlayService{
         return tablePlayRepo.findById(id);
     }
 
-    public boolean updateTableStatus(Integer tableId, String status) {
-        Optional<TablePlay> tableOptional = tablePlayRepo.findById(tableId);
-        if (tableOptional.isPresent()) {
-            TablePlay tablePlay = tableOptional.get();
-            tablePlay.setTableStatus(status);
-            tablePlayRepo.save(tablePlay);
-            return true;
-        }
-        return false;
+//    public boolean updateTableStatus(Integer tableId, String status) {
+//        Optional<TablePlay> tableOptional = tablePlayRepo.findById(tableId);
+//        if (tableOptional.isPresent()) {
+//            TablePlay tablePlay = tableOptional.get();
+//            tablePlay.setTableStatus(status);
+//            tablePlayRepo.save(tablePlay);
+//            return true;
+//        }
+//        return false;
+//    }
+
+    // Cập nhật trạng thái của bàn theo tableId
+    public TablePlay updateTableStatus(Integer tableId, String tableStatus) {
+        // Tìm bàn theo ID
+        TablePlay table = tablePlayRepo.findById(tableId)
+                .orElseThrow(() -> new ResourceNotFoundException("Table not found with id " + tableId));
+
+        // Cập nhật trạng thái bàn
+        table.setTableStatus(tableStatus);
+        return tablePlayRepo.save(table); // Lưu bàn với trạng thái mới
     }
 
     public TablePlayWithPriceDTO getTableWithPriceById(Integer id) {
@@ -123,10 +134,47 @@ public class TablePlayServiceImpl implements TablePlayService{
         return null; // Trả về null nếu không tìm thấy bàn
     }
 
+    public List<TablePlayWithPriceDTO> getTableDetails(List<Integer> tableIds) {
+        List<TablePlayWithPriceDTO> tableWithPrices = new ArrayList<>();
+
+        for (Integer tableId : tableIds) {
+            TablePlay table = tablePlayRepo.findById(tableId).orElse(null);
+            if (table != null) {
+                List<Integer> priceIds = table.getType().getPriceIds();
+                if (!priceIds.isEmpty()) {
+                    Integer priceId = priceIds.get(0); // Giả sử chỉ lấy giá đầu tiên
+                    Price price = priceRepo.getPriceById(priceId);
+                    if (price != null) {
+                        tableWithPrices.add(new TablePlayWithPriceDTO(table.getId(), table.getTableNum(), table.getTableStatus(), table.getType().getName(), price.getPrice()));
+                    }
+                }
+            }
+        }
+
+        return tableWithPrices;
+    }
+
+
     public List<TablePlay> getTablesByStatus(String status) {
         return tablePlayRepo.findByTableStatus(status);
     }
 
+    // Phương thức này sẽ trả về trạng thái của bàn dựa trên tableId
+    public String getTableStatus(Integer tableId) {
+        // Tìm bàn theo tableId trong cơ sở dữ liệu
+        Optional<TablePlay> tablePlay = tablePlayRepo.findById(tableId);
 
+        // Kiểm tra nếu bàn tồn tại
+        if (tablePlay.isPresent()) {
+            return tablePlay.get().getTableStatus();  // Trả về trạng thái của bàn
+        } else {
+            return "Bàn không tồn tại";  // Trả về thông báo nếu bàn không tồn tại
+        }
+    }
+
+    // Hàm tìm bàn dựa trên ID
+    public TablePlay getTableById(Integer tableId) {
+        return tablePlayRepo.findById(tableId).orElse(null);
+    }
 
 }

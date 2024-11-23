@@ -36,9 +36,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/tables/with-prices").permitAll()
                                 .requestMatchers("/api/tables/with-type-price/{id}").permitAll()
                                 .requestMatchers("/api/tables/update-status").permitAll()
+                        .requestMatchers("/api/tables/update-status/{tableId}").permitAll()
                                 .requestMatchers("/api/tables/available").permitAll()
                                 .requestMatchers("/api/tables/with-tableNum-typeName").permitAll()
-
+                            .requestMatchers("/api/tables/{tableId}").permitAll()
+                        .requestMatchers("/api/tables/{tableId}/status").permitAll()
 
 
                         .anyRequest().authenticated()

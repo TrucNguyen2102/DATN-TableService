@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TablePlayRepo extends JpaRepository<TablePlay, Integer> {
@@ -17,4 +18,7 @@ public interface TablePlayRepo extends JpaRepository<TablePlay, Integer> {
 
 
     List<TablePlay> findByTableStatus(String tableStatus);
+
+    // Tìm bàn theo tableId
+    Optional<TablePlay> findById(Integer tableId);
 }

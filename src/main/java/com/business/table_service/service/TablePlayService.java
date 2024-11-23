@@ -23,14 +23,20 @@ public interface TablePlayService {
 
     List<TablePlayWithPriceDTO> getAllTablesWithPrices();
 
+    List<TablePlayWithPriceDTO> getTableDetails(List<Integer> tableIds);
 
     Optional<TablePlay> findById(Integer id);
 
-    boolean updateTableStatus(Integer tableId, String status);
+//    boolean updateTableStatus(Integer tableId, String status);
+
+    TablePlay updateTableStatus(Integer tableId, String tableStatus);
 
     TablePlayWithPriceDTO getTableWithPriceById(Integer id);
 
 
     List<TablePlay> getTablesByStatus(String status);
 
+    String getTableStatus(Integer tableId);
+
+    TablePlay getTableById(Integer tableId);
 }
