@@ -53,6 +53,11 @@ public class TablePlayServiceImpl implements TablePlayService{
         return tablePlayRepo.save(tablePlay);
     }
 
+    // Lấy bàn theo loại
+    public List<TablePlay> getTablesByType(Integer typeId) {
+        return tablePlayRepo.findByTypeId(typeId);
+    }
+
     @Override
     public TablePlay updateTable(Integer id, TablePlay newTablePlay) {
         TablePlay existingTable = tablePlayRepo.findById(id)
@@ -177,4 +182,7 @@ public class TablePlayServiceImpl implements TablePlayService{
         return tablePlayRepo.findById(tableId).orElse(null);
     }
 
+    public List<TablePlay> getPlayingTables() {
+        return tablePlayRepo.findByTableStatus("Đang Chơi");
+    }
 }

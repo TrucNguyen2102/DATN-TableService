@@ -21,4 +21,7 @@ public interface TablePlayRepo extends JpaRepository<TablePlay, Integer> {
 
     // Tìm bàn theo tableId
     Optional<TablePlay> findById(Integer tableId);
+
+    // Tìm bàn theo loại
+    List<TablePlay> findByTypeId(Integer typeId);
 }

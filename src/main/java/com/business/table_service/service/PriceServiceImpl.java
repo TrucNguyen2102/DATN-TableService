@@ -51,6 +51,11 @@ public class PriceServiceImpl implements PriceService{
         priceRepo.deleteById(id);
     }
 
+    public Price getTablePriceById(Integer priceId) {
+        // Tìm giá của bàn theo priceId trong cơ sở dữ liệu
+        return priceRepo.findById(priceId).orElse(null);  // Trả về null nếu không tìm thấy
+    }
+
 //    @Override
 //    public Double getPriceById(List<Integer> priceIds) {
 //        // Giả định bạn chỉ lấy giá của một ID, nếu priceIds có nhiều hơn một ID, hãy điều chỉnh lại.

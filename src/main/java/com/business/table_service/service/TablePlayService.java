@@ -39,4 +39,8 @@ public interface TablePlayService {
     String getTableStatus(Integer tableId);
 
     TablePlay getTableById(Integer tableId);
+
+    List<TablePlay> getPlayingTables();
+
+    List<TablePlay> getTablesByType(Integer typeId);
 }

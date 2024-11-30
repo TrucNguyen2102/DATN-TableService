@@ -15,5 +15,5 @@ public interface PriceService {
 
     void deletePrice(Integer id);
 
-
+    Price getTablePriceById(Integer priceId);
 }

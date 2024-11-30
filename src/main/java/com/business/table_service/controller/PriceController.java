@@ -88,5 +88,22 @@ public class PriceController {
         return ResponseEntity.noContent().build();
     }
 
+    // API để lấy thông tin giá của bàn theo priceId
+    @GetMapping("/prices/{priceId}")
+    public ResponseEntity<Price> getTablePrice(@PathVariable Integer priceId) {
+        try {
+            Price price = priceService.getTablePriceById(priceId);
+
+            if (price != null) {
+                return ResponseEntity.ok(price);  // Trả về dữ liệu khi tìm thấy
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  // Trả về 404 nếu không tìm thấy
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
 
 }

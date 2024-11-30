@@ -87,6 +87,13 @@ public class TablePlayController {
 
     }
 
+    // Endpoint GET lấy bàn theo loại
+    @GetMapping("/getType")
+    public List<TablePlay> getTablesByType(@RequestParam("type") Integer typeId) {
+        // Gọi service để lấy bàn theo loại
+        return tablePlayService.getTablesByType(typeId);
+    }
+
 
     @GetMapping("/with-tableNum-typeName")
     public ResponseEntity<List<Map<String, Object>>> getTablesWithNumAndType() {
@@ -328,7 +335,18 @@ public class TablePlayController {
         }
     }
 
-
+    //lấy bàn có trạng thái Đang Chơi
+    @GetMapping("/playing")
+    public ResponseEntity<List<TablePlay>> getPlayingTables() {
+        try {
+            List<TablePlay> tables = tablePlayService.getPlayingTables();
+            return ResponseEntity.ok(tables);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
 
 
 
