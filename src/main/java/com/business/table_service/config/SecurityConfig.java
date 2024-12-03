@@ -20,6 +20,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/tables/endpoints").permitAll()
                         .requestMatchers("/api/tables/prices/add").permitAll()
                         .requestMatchers("/api/tables/prices/all").permitAll()
                         .requestMatchers("/api/tables/prices/update/{id}").permitAll()

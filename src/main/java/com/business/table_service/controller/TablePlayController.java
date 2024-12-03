@@ -33,6 +33,34 @@ public class TablePlayController {
     @Autowired
     private TablePlayRepo tablePlayRepo;
 
+    @GetMapping("/endpoints")
+    public List<Map<String, String>> getEndpoints() {
+        return List.of(
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/types/all"),
+                Map.of("service", "table-service", "method", "POST", "url", "/api/tables/types/add"),
+                Map.of("service", "table-service", "method", "PUT", "url", "/api/tables/types/update/{id}"),
+                Map.of("service", "table-service", "method", "DELETE", "url", "/api/tables/types/delete/{id}"),
+
+                Map.of("service", "table-service", "method", "POST", "url", "/api/tables/prices/add"),
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/prices/all"),
+                Map.of("service", "table-service", "method", "PUT", "url", "/api/tables/prices/update/{id}"),
+                Map.of("service", "table-service", "method", "DELETE", "url", "/api/tables/prices/delete/{id}"),
+
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/all"),
+                Map.of("service", "table-service", "method", "PUT", "url", "/api/tables/update/{id}"),
+                Map.of("service", "table-service", "method", "POST", "url", "/api/tables/add"),
+                Map.of("service", "table-service", "method", "DELETE", "url", "/api/tables/delete/{id}"),
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/with-tableNum-typeName"),
+                Map.of("service", "table-service", "method", "PUT", "url", "/api/tables/update-status"),
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/available"),
+                Map.of("service", "table-service", "method", "PUT", "url", "/api/tables/{tableId}/status"),
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/{tableId}"),
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/with-type-price/{tableId}")
+
+
+        );
+    }
+
     @PostMapping("/add")
     public ResponseEntity<TablePlay> addTable(@RequestBody TablePlayDTO tablePlayDTO) {
         try {
