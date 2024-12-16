@@ -43,6 +43,26 @@ public class PriceServiceImpl implements PriceService{
         }
     }
 
+    public boolean lockPrice(Integer id) {
+        Optional<Price> priceOptional = priceRepo.findById(id);
+        if (priceOptional.isPresent()) {
+            Price price = priceOptional.get();
+            price.setActive(false);  // Đánh dấu là khóa (inactive)
+            priceRepo.save(price);  // Lưu thay đổi
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPriceInUse(Integer priceId) {
+        // Lấy Price dựa vào ID
+        Price price = priceRepo.findById(priceId)
+                .orElseThrow(() -> new IllegalArgumentException("Giá không tồn tại."));
+
+        // Kiểm tra nếu tập `typePrices` không rỗng, nghĩa là giá đang được tham chiếu
+        return !price.getTypePrices().isEmpty();
+    }
+
     @Override
     public void deletePrice(Integer id) {
         if (!priceRepo.existsById(id)) {

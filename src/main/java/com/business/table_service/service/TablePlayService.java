@@ -43,4 +43,6 @@ public interface TablePlayService {
     List<TablePlay> getPlayingTables();
 
     List<TablePlay> getTablesByType(Integer typeId);
+
+    boolean isTypeUsed(Integer typeId);
 }

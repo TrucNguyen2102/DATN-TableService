@@ -81,12 +81,38 @@ public class PriceController {
         return ResponseEntity.ok(updatedPrice);
     }
 
-    //API xóa giá
-    @DeleteMapping("/prices/delete/{id}")
-    public ResponseEntity<Void> deletePrice(@PathVariable Integer id) {
-        priceService.deletePrice(id);
-        return ResponseEntity.noContent().build();
+    @PutMapping("/prices/lock/{id}")
+    public ResponseEntity<String> lockPrice(@PathVariable Integer id) {
+        boolean result = priceService.lockPrice(id);
+        if (result) {
+            return ResponseEntity.ok("Price locked successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Price not found");
+        }
     }
+
+    //API xóa giá
+//    @DeleteMapping("/prices/delete/{id}")
+//    public ResponseEntity<Void> deletePrice(@PathVariable Integer id) {
+//        priceService.deletePrice(id);
+//        return ResponseEntity.noContent().build();
+//    }
+
+    @DeleteMapping("/prices/delete/{id}")
+    public ResponseEntity<String> deletePrice(@PathVariable Integer id) {
+        try {
+            if (priceService.isPriceInUse(id)) {
+                return ResponseEntity.badRequest().body("Giá đang được sử dụng bởi loại bàn, không thể xóa.");
+            }
+            priceService.deletePrice(id);
+            return ResponseEntity.noContent().build();
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
 
     // API để lấy thông tin giá của bàn theo priceId
     @GetMapping("/prices/{priceId}")

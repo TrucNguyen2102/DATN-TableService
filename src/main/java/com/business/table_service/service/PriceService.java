@@ -13,6 +13,10 @@ public interface PriceService {
 
     Price updatePrice(Integer id, Price price);
 
+    boolean lockPrice(Integer id);
+
+    boolean isPriceInUse(Integer priceId);
+
     void deletePrice(Integer id);
 
     Price getTablePriceById(Integer priceId);

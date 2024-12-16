@@ -2,6 +2,8 @@ package com.business.table_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,11 +21,14 @@ public class Price {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "start_date", nullable = false)
-    private Date startDate;
+    private LocalDate startDate;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
+
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @OneToMany(mappedBy = "price")
     @JsonBackReference // Chỉ định phía bị quản lý
@@ -32,11 +37,12 @@ public class Price {
     public Price() {
     }
 
-    public Price(Integer id, double price, Date startDate, Date endDate, Set<TypePrice> typePrices) {
+    public Price(Integer id, double price, LocalDate startDate, LocalDate endDate, boolean isActive, Set<TypePrice> typePrices) {
         this.id = id;
         this.price = price;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.isActive = isActive;
         this.typePrices = typePrices;
     }
 
@@ -56,20 +62,28 @@ public class Price {
         this.price = price;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public Set<TypePrice> getTypePrices() {

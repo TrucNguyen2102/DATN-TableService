@@ -185,4 +185,10 @@ public class TablePlayServiceImpl implements TablePlayService{
     public List<TablePlay> getPlayingTables() {
         return tablePlayRepo.findByTableStatus("Đang Chơi");
     }
+
+    public boolean isTypeUsed(Integer typeId) {
+        List<TablePlay> tables = tablePlayRepo.findByTypeId(typeId); // Giả sử bạn có một phương thức để tìm các bàn chơi theo loại bàn
+        return !tables.isEmpty(); // Nếu có bàn chơi nào có loại bàn này, trả về true
+    }
+
 }

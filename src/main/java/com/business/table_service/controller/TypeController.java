@@ -5,13 +5,16 @@ import com.business.table_service.dto.TypeDTO;
 import com.business.table_service.entity.Type;
 import com.business.table_service.repository.PriceRepo;
 import com.business.table_service.service.PriceService;
+import com.business.table_service.service.TablePlayService;
 import com.business.table_service.service.TypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,6 +25,9 @@ public class TypeController {
 
     @Autowired
     private PriceService priceService;
+
+    @Autowired
+    private TablePlayService tablePlayService;
 
     @Autowired
     private PriceRepo priceRepo;
@@ -68,6 +74,22 @@ public class TypeController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+    //kiểm tra loại bàn trc khi xóa
+    @GetMapping("/types/check-used/{id}")
+    public ResponseEntity<Map<String, Boolean>> checkTypeUsed(@PathVariable Integer id) {
+        try {
+            boolean isUsed = tablePlayService.isTypeUsed(id); // Giả sử tableService sẽ kiểm tra loại bàn trong các bàn chơi
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("isUsed", isUsed);
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
 
     //API xóa loại
     // Xóa một loại bàn

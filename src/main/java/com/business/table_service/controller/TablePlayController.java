@@ -10,6 +10,7 @@ import com.business.table_service.service.TablePlayService;
 import com.business.table_service.service.TypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +40,7 @@ public class TablePlayController {
                 Map.of("service", "table-service", "method", "GET", "url", "/api/tables/types/all"),
                 Map.of("service", "table-service", "method", "POST", "url", "/api/tables/types/add"),
                 Map.of("service", "table-service", "method", "PUT", "url", "/api/tables/types/update/{id}"),
+                Map.of("service", "table-service", "method", "GET", "url", "/api/tables/types/check-used/{id}"),
                 Map.of("service", "table-service", "method", "DELETE", "url", "/api/tables/types/delete/{id}"),
 
                 Map.of("service", "table-service", "method", "POST", "url", "/api/tables/prices/add"),
@@ -84,20 +86,28 @@ public class TablePlayController {
 
     }
 
-    @GetMapping("/pages/all")
-    public ResponseEntity<Page<TablePlay>> getAllTables(Pageable pageable) {
-        try {
-            // Lấy danh sách bàn theo phân trang
-            Page<TablePlay> tablePlays = tablePlayService.getAllTables(pageable);
+//    @GetMapping("/pages/all")
+//    public ResponseEntity<Page<TablePlay>> getAllTables(Pageable pageable) {
+//        try {
+//            // Lấy danh sách bàn theo phân trang
+//            Page<TablePlay> tablePlays = tablePlayService.getAllTables(pageable);
+//
+//            if (tablePlays.isEmpty()) {
+//                return ResponseEntity.noContent().build();  // Nếu danh sách rỗng, trả về mã 204 (No Content)
+//            }
+//            return ResponseEntity.ok(tablePlays);  // Trả về danh sách bàn kèm theo thông tin phân trang với mã 200 (OK)
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Trả về lỗi 500 (Internal Server Error)
+//        }
+//    }
 
-            if (tablePlays.isEmpty()) {
-                return ResponseEntity.noContent().build();  // Nếu danh sách rỗng, trả về mã 204 (No Content)
-            }
-            return ResponseEntity.ok(tablePlays);  // Trả về danh sách bàn kèm theo thông tin phân trang với mã 200 (OK)
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Trả về lỗi 500 (Internal Server Error)
-        }
+    @GetMapping("/pages/all")
+    public Page<TablePlay> getAllTables(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return tablePlayService.getAllTables(pageable);
     }
 
     @GetMapping("/all")
