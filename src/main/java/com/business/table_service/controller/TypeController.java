@@ -2,12 +2,16 @@ package com.business.table_service.controller;
 
 import com.business.table_service.dto.TablePlayWithPriceDTO;
 import com.business.table_service.dto.TypeDTO;
+import com.business.table_service.entity.Price;
 import com.business.table_service.entity.Type;
 import com.business.table_service.repository.PriceRepo;
 import com.business.table_service.service.PriceService;
 import com.business.table_service.service.TablePlayService;
 import com.business.table_service.service.TypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +48,14 @@ public class TypeController {
         }
     }
 
+    @GetMapping("/types/pages/all")
+    public Page<Type> getAllPrices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return typeService.getAllTypes(pageable);
+    }
+
     // API lấy danh sách loại bàn
     @GetMapping("/types/all")
     public List<TypeDTO> getAllTypes() {
@@ -52,14 +64,6 @@ public class TypeController {
                 .map(type -> new TypeDTO(type.getId(), type.getName(), type.getPriceIds()))
                 .collect(Collectors.toList());
     }
-
-
-
-
-
-
-
-
 
 
     //API cập nhật loại bàn

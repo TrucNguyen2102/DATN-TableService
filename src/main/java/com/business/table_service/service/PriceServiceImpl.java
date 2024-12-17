@@ -1,9 +1,12 @@
 package com.business.table_service.service;
 
 import com.business.table_service.entity.Price;
+import com.business.table_service.entity.TablePlay;
 import com.business.table_service.exception.ResourceNotFoundException;
 import com.business.table_service.repository.PriceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,10 @@ public class PriceServiceImpl implements PriceService{
     @Override
     public List<Price> getAllPrices() {
         return priceRepo.findAll();
+    }
+
+    public Page<Price> getAllPrices(Pageable pageable) {
+        return priceRepo.findAll(pageable);  // Sử dụng phương thức findAll() của JpaRepository với Pageable
     }
 
 

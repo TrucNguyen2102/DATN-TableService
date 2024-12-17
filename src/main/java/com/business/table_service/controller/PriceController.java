@@ -1,8 +1,12 @@
 package com.business.table_service.controller;
 
 import com.business.table_service.entity.Price;
+import com.business.table_service.entity.TablePlay;
 import com.business.table_service.service.PriceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +64,14 @@ public class PriceController {
 //    }
 
     // API lấy tất cả giá
+    @GetMapping("/prices/pages/all")
+    public Page<Price> getAllPrices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return priceService.getAllPrices(pageable);
+    }
+
     @GetMapping("/prices/all")
     public ResponseEntity<List<Price>> getAllPrices() {
         try {

@@ -63,28 +63,59 @@ public class TablePlayController {
         );
     }
 
+//    @PostMapping("/add")
+//    public ResponseEntity<TablePlay> addTable(@RequestBody TablePlayDTO tablePlayDTO) {
+//        try {
+//
+//
+//            TablePlay tablePlay = new TablePlay();
+//            tablePlay.setTableNum(tablePlayDTO.getTableNum());
+//            tablePlay.setTableStatus(tablePlayDTO.getTableStatus());
+//
+//            // Thiết lập type từ typeId
+//            Type type = new Type();
+//            type.setId(tablePlayDTO.getTypeId()); // Gán type từ ID truyền từ frontend
+//            tablePlay.setType(type);
+//
+//            TablePlay savedTable = tablePlayService.addTablePlay(tablePlay);
+//            return new ResponseEntity<>(savedTable, HttpStatus.CREATED);
+//        } catch (IllegalArgumentException e) {
+//            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//    }
+
     @PostMapping("/add")
-    public ResponseEntity<TablePlay> addTable(@RequestBody TablePlayDTO tablePlayDTO) {
+    public ResponseEntity<?> addTable(@RequestBody TablePlayDTO tablePlayDTO) {
         try {
+            // Kiểm tra số bàn trùng
+            if (tablePlayService.isTableNumExist(tablePlayDTO.getTableNum())) {
+//                return new ResponseEntity<>("Số bàn đã tồn tại!", HttpStatus.CONFLICT);
+                return new ResponseEntity<>(Map.of("message", "Số bàn đã tồn tại!."), HttpStatus.CONFLICT);
+            }
+
             TablePlay tablePlay = new TablePlay();
             tablePlay.setTableNum(tablePlayDTO.getTableNum());
             tablePlay.setTableStatus(tablePlayDTO.getTableStatus());
 
             // Thiết lập type từ typeId
             Type type = new Type();
-            type.setId(tablePlayDTO.getTypeId()); // Gán type từ ID truyền từ frontend
+            type.setId(tablePlayDTO.getTypeId());
             tablePlay.setType(type);
 
             TablePlay savedTable = tablePlayService.addTablePlay(tablePlay);
             return new ResponseEntity<>(savedTable, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Đã xảy ra lỗi khi thêm bàn!", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
 
 //    @GetMapping("/pages/all")
 //    public ResponseEntity<Page<TablePlay>> getAllTables(Pageable pageable) {

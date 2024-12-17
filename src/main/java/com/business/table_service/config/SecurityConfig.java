@@ -23,11 +23,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/tables/endpoints").permitAll()
                         .requestMatchers("/api/tables/prices/add").permitAll()
                         .requestMatchers("/api/tables/prices/all").permitAll()
+                        .requestMatchers("/api/tables/prices/pages/all").permitAll()
                         .requestMatchers("/api/tables/prices/lock/{id}").permitAll()
                         .requestMatchers("/api/tables/prices/update/{id}").permitAll()
                         .requestMatchers("/api/tables/prices/delete/{id}").permitAll()
                         .requestMatchers("/api/tables/types/add").permitAll()
                         .requestMatchers("/api/tables/types/all").permitAll()
+                        .requestMatchers("/api/tables/types/pages/all").permitAll()
                         .requestMatchers("/api/tables/types/update/{id}").permitAll()
                         .requestMatchers("/api/tables/types/check-used/{id}").permitAll()
                         .requestMatchers("/api/tables/types/delete/{id}").permitAll()
@@ -35,6 +37,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/tables/add").permitAll()
                         .requestMatchers("/api/tables/all").permitAll()
+
                         .requestMatchers("/api/tables/getType").permitAll()
                                 .requestMatchers("/api/tables/pages/all").permitAll()
                         .requestMatchers("/api/tables/update/{id}").permitAll()

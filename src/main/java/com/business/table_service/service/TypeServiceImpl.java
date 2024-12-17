@@ -10,6 +10,8 @@ import com.business.table_service.repository.PriceRepo;
 import com.business.table_service.repository.TypePriceRepo;
 import com.business.table_service.repository.TypeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +84,10 @@ public class TypeServiceImpl implements TypeService{
     @Override
     public List<Type> getAllTypes() {
         return typeRepo.findAll();
+    }
+
+    public Page<Type> getAllTypes(Pageable pageable) {
+        return typeRepo.findAll(pageable);
     }
 
 //    @Transactional

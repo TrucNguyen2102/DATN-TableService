@@ -14,6 +14,8 @@ public interface TablePlayService {
     Page<TablePlay> getAllTables(Pageable pageable);
     List<TablePlay> getAllTables();
 
+    boolean isTableNumExist(int tableNum);
+
     TablePlay addTablePlay(TablePlay tablePlay);
 
     TablePlay updateTable(Integer id, TablePlay newTablePlay);

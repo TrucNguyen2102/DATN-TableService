@@ -48,8 +48,19 @@ public class TablePlayServiceImpl implements TablePlayService{
     }
 
 
-    @Override
+//    @Override
+//    public TablePlay addTablePlay(TablePlay tablePlay) {
+//        return tablePlayRepo.save(tablePlay);
+//    }
+
+    public boolean isTableNumExist(int tableNum) {
+        return tablePlayRepo.existsByTableNum(tableNum);
+    }
+
     public TablePlay addTablePlay(TablePlay tablePlay) {
+        if (isTableNumExist(tablePlay.getTableNum())) {
+            throw new IllegalArgumentException("Số bàn đã tồn tại!");
+        }
         return tablePlayRepo.save(tablePlay);
     }
 
