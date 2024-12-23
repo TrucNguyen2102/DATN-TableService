@@ -50,6 +50,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/tables/{tableId}").permitAll()
                         .requestMatchers("/api/tables/{tableId}/status").permitAll()
                         .requestMatchers("/api/tables/playing").permitAll()
+                        .requestMatchers("/api/tables/delete/{id}").permitAll()
 
 
                         .anyRequest().authenticated()
